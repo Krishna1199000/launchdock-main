@@ -1,8 +1,13 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail, MessageSquare } from "lucide-react";
 
-const CTA = () => {
+type Props = {
+  onAction?: () => void;
+  onViewProcess?: () => void;
+};
+
+const CTA = ({ onAction, onViewProcess }: Props) => {
   return (
     <section id="about" className="py-32 relative">
       <div className="container mx-auto px-6">
@@ -37,12 +42,12 @@ const CTA = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button variant="hero" size="xl" className="group">
+                <Button variant="hero" size="xl" className="group" onClick={onAction}>
                   <Mail className="w-5 h-5" />
                   Schedule a Call
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button variant="hero-outline" size="xl">
+                <Button variant="hero-outline" size="xl" onClick={onViewProcess}>
                   View Our Process
                 </Button>
               </div>

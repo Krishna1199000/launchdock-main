@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { 
   LayoutDashboard,
@@ -20,241 +20,275 @@ import {
   Upload,
   Download,
   Play,
-  Pause
+  Pause,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import ProjectCard from "./ProjectCard";
 
 const ClientDashboard = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("projects");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [messageInput, setMessageInput] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
 
-  const sidebarItems = [
+  // Compute sidebar items with dynamic badge
+  const sidebarItems = useMemo(() => [
     { id: "projects", label: "My Projects", icon: FolderOpen },
     { id: "timeline", label: "Project Timeline", icon: Clock },
-    { id: "messages", label: "Messages", icon: MessageSquare, badge: 3 },
+    { id: "messages", label: "Messages", icon: MessageSquare, badge: messages.filter((m: any) => m.isAdmin).length },
     { id: "files", label: "File Manager", icon: FileText },
     { id: "payments", label: "Payments", icon: CreditCard },
     { id: "support", label: "Support", icon: HelpCircle },
     { id: "settings", label: "Settings", icon: Settings },
-  ];
+  ], [messages]);
 
-  const projects = [
-    {
-      id: 1,
-      name: "E-commerce Website",
-      type: "Web Development",
-      status: "Development",
-      progress: 65,
-      deadline: "Dec 15, 2024",
-      color: "bg-blue-500"
-    },
-    {
-      id: 2,
-      name: "Brand Identity",
-      type: "Branding",
-      status: "Review",
-      progress: 90,
-      deadline: "Nov 30, 2024",
-      color: "bg-purple-500"
-    },
-    {
-      id: 3,
-      name: "Mobile App UI",
-      type: "UI/UX Design",
-      status: "Design",
-      progress: 40,
-      deadline: "Jan 20, 2025",
-      color: "bg-green-500"
+  // Fetch user data on mount
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      fetchDashboardData(parsedUser.id);
+    } else {
+      router.push("/signin");
     }
-  ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const messages = [
-    {
-      id: 1,
-      sender: "Admin",
-      message: "Your website design has been approved! Moving to development phase.",
-      time: "2 hours ago",
-      isAdmin: true
-    },
-    {
-      id: 2,
-      sender: "You",
-      message: "Thank you! When can I expect the first development update?",
-      time: "1 hour ago",
-      isAdmin: false
-    },
-    {
-      id: 3,
-      sender: "Admin",
-      message: "We'll have the first milestone ready by Friday. I'll send you the preview link.",
-      time: "30 min ago",
-      isAdmin: true
+  const fetchDashboardData = async (userId: string) => {
+    setLoading(true);
+    try {
+      // Fetch all data in parallel
+      const [projectsRes, messagesRes, filesRes] = await Promise.all([
+        fetch(`/api/projects?userId=${userId}`),
+        fetch(`/api/messages?userId=${userId}`),
+        fetch(`/api/files?userId=${userId}`),
+      ]);
+
+      const projectsData = await projectsRes.json();
+      const messagesData = await messagesRes.json();
+      const filesData = await filesRes.json();
+
+      if (projectsData.success) setProjects(projectsData.projects || []);
+      if (messagesData.success) setMessages(messagesData.messages || []);
+      if (filesData.success) setFiles(filesData.files || []);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard data. Please refresh the page.",
+        variant: "error",
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const renderProjects = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-foreground">My Projects</h2>
-        <Button variant="hero" size="sm" className="group">
-          <Plus className="w-4 h-4" />
-          New Project
-        </Button>
-      </div>
+  const handleSendMessage = async () => {
+    if (!messageInput.trim() || !user) return;
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project, index) => (
-          <div
-            key={project.id}
-            className="
-              group bg-card border border-border/30 rounded-2xl p-6
-              transition-all duration-500
-              hover:shadow-xl hover:shadow-foreground/5
-              hover:-translate-y-2 hover:border-primary/30
-              animate-slide-up
-            "
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className={`w-3 h-3 rounded-full ${project.color}`} />
-              <span className={`
-                px-3 py-1 rounded-full text-xs font-medium
-                ${project.status === 'Development' ? 'bg-blue-100 text-blue-700' :
-                  project.status === 'Review' ? 'bg-purple-100 text-purple-700' :
-                  project.status === 'Design' ? 'bg-green-100 text-green-700' :
-                  'bg-gray-100 text-gray-700'}
-              `}>
-                {project.status}
-              </span>
-            </div>
+    setSendingMessage(true);
+    try {
+      const response = await fetch("/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          content: messageInput,
+        }),
+      });
 
-            <h3 className="font-display text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-              {project.name}
-            </h3>
-            <p className="text-muted-foreground text-sm mb-4">{project.type}</p>
+      const data = await response.json();
+      if (data.success) {
+        setMessages((prev) => [data.message, ...prev]);
+        setMessageInput("");
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message. Please try again.",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Network error. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setSendingMessage(false);
+    }
+  };
 
-            {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Progress</span>
-                <span className="text-sm font-medium text-foreground">{project.progress}%</span>
-              </div>
-              <div className="w-full bg-border/30 rounded-full h-2">
-                <div 
-                  className="bg-primary h-2 rounded-full transition-all duration-1000"
-                  style={{ width: `${project.progress}%` }}
-                />
-              </div>
-            </div>
+  const renderProjects = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      );
+    }
 
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Due: {project.deadline}</span>
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-            </div>
+    if (projects.length === 0) {
+      return (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-foreground">My Projects</h2>
+            <Button variant="hero" size="sm" className="group">
+              <Plus className="w-4 h-4" />
+              New Project
+            </Button>
           </div>
-        ))}
-      </div>
-    </div>
-  );
+          <div className="text-center py-12">
+            <FolderOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No projects yet. Start by creating a new project!</p>
+          </div>
+        </div>
+      );
+    }
 
-  const renderMessages = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-foreground">Messages</h2>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-sm text-muted-foreground">Online</span>
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">My Projects</h2>
+          <Button variant="hero" size="sm" className="group">
+            <Plus className="w-4 h-4" />
+            New Project
+          </Button>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project, index) => {
+            // Map API project to ProjectCard format
+            const projectCard = {
+              id: project.id,
+              name: project.name,
+              type: project.type,
+              status: project.status,
+              progress: project.progress,
+              deadline: project.deadline,
+              _count: project._count,
+            };
+            return (
+              <ProjectCard
+                key={project.id}
+                project={projectCard}
+                index={index}
+              />
+            );
+          })}
         </div>
       </div>
+    );
+  };
 
-      <div className="bg-card border border-border/30 rounded-2xl p-6 h-96 flex flex-col">
-        {/* Messages */}
-        <div className="flex-1 space-y-4 overflow-y-auto mb-4">
-          {messages.map((msg, index) => (
+  const renderMessages = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">Messages</h2>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-sm text-muted-foreground">Online</span>
+          </div>
+        </div>
+
+        <div className="text-center py-12">
+          <MessageSquare className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground mb-4">
+            Select a project to view messages
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Messages are available in the project detail view
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderFiles = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    if (files.length === 0) {
+      return (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-foreground">File Manager</h2>
+            <Button variant="hero" size="sm" className="group">
+              <Upload className="w-4 h-4" />
+              Upload Files
+            </Button>
+          </div>
+          <div className="text-center py-12">
+            <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No files yet. Upload your first file!</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">File Manager</h2>
+          <Button variant="hero" size="sm" className="group">
+            <Upload className="w-4 h-4" />
+            Upload Files
+          </Button>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {files.map((file, index) => (
             <div
-              key={msg.id}
-              className={`flex ${msg.isAdmin ? 'justify-start' : 'justify-end'} animate-slide-up`}
+              key={file.id}
+              className="
+                bg-card border border-border/30 rounded-2xl p-4
+                transition-all duration-300
+                hover:shadow-lg hover:shadow-foreground/5
+                hover:-translate-y-1
+                animate-slide-up
+              "
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className={`
-                max-w-xs lg:max-w-md px-4 py-3 rounded-2xl
-                ${msg.isAdmin 
-                  ? 'bg-secondary text-foreground' 
-                  : 'bg-primary text-primary-foreground'
-                }
-              `}>
-                <p className="text-sm">{msg.message}</p>
-                <p className={`text-xs mt-1 ${msg.isAdmin ? 'text-muted-foreground' : 'text-primary-foreground/70'}`}>
-                  {msg.time}
-                </p>
+              <div className="flex items-center justify-between mb-3">
+                <FileText className="w-8 h-8 text-primary" />
+                <Button variant="ghost" size="sm">
+                  <Download className="w-4 h-4" />
+                </Button>
               </div>
+              <h4 className="font-medium text-foreground text-sm mb-1 truncate">{file.name}</h4>
+              <p className="text-xs text-muted-foreground">{file.size} • {file.type}</p>
             </div>
           ))}
         </div>
-
-        {/* Message Input */}
-        <div className="flex items-center gap-3">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            className="
-              flex-1 px-4 py-3 rounded-2xl
-              border border-border/30 bg-background
-              text-foreground placeholder:text-muted-foreground
-              focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10
-              transition-all duration-300
-            "
-          />
-          <Button variant="hero" size="sm">
-            Send
-          </Button>
-        </div>
       </div>
-    </div>
-  );
-
-  const renderFiles = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-foreground">File Manager</h2>
-        <Button variant="hero" size="sm" className="group">
-          <Upload className="w-4 h-4" />
-          Upload Files
-        </Button>
-      </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { name: "Brand Guidelines.pdf", size: "2.4 MB", type: "PDF" },
-          { name: "Website Mockups.fig", size: "15.8 MB", type: "Figma" },
-          { name: "Logo Assets.zip", size: "8.2 MB", type: "Archive" },
-          { name: "Content Document.docx", size: "1.1 MB", type: "Word" }
-        ].map((file, index) => (
-          <div
-            key={index}
-            className="
-              bg-card border border-border/30 rounded-2xl p-4
-              transition-all duration-300
-              hover:shadow-lg hover:shadow-foreground/5
-              hover:-translate-y-1
-              animate-slide-up
-            "
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <FileText className="w-8 h-8 text-primary" />
-              <Button variant="ghost" size="sm">
-                <Download className="w-4 h-4" />
-              </Button>
-            </div>
-            <h4 className="font-medium text-foreground text-sm mb-1">{file.name}</h4>
-            <p className="text-xs text-muted-foreground">{file.size} • {file.type}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    );
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -372,7 +406,10 @@ const ClientDashboard = () => {
                 variant="outline"
                 size="sm"
                 className="hidden md:inline-flex"
-                onClick={() => router.push("/signin")}
+                onClick={() => {
+                  localStorage.removeItem("user");
+                  router.push("/signin");
+                }}
               >
                 Logout
               </Button>

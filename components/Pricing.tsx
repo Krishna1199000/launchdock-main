@@ -1,14 +1,18 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
-import { 
-  Rocket, 
-  Building2, 
-  Crown, 
+import {
+  Rocket,
+  Building2,
+  Crown,
   Sparkles,
   Check,
   ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+type Props = {
+  onPlanAction?: (planId: string) => void;
+};
 
 const plans = [
   {
@@ -95,7 +99,7 @@ const pricingQuotes = [
   "Success is built on clarity, consistency, and creativity."
 ];
 
-const Pricing = () => {
+const Pricing = ({ onPlanAction }: Props) => {
   const [currentQuote, setCurrentQuote] = useState(0);
   const [visiblePlans, setVisiblePlans] = useState<Set<string>>(new Set());
 
@@ -243,6 +247,7 @@ const Pricing = () => {
                     variant={plan.popular ? "hero" : "hero-outline"}
                     size="lg"
                     className="w-full group/btn"
+                    onClick={() => onPlanAction?.(plan.id)}
                   >
                     {plan.cta}
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />

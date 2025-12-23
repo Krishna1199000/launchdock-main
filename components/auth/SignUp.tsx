@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { 
   Eye, 
   EyeOff, 
@@ -10,12 +11,16 @@ import {
   Building2,
   ChevronDown,
   Check,
-  ArrowRight
+  ArrowRight,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -28,7 +33,10 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [validatedFields, setValidatedFields] = useState<Set<string>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [showOTPForm, setShowOTPForm] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -45,15 +53,181 @@ const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSuccessMessage("");
     
-    // Placeholder: connect to real signup
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setSuccessMessage("Signup received. We'll reach out once your account is set up.");
-    setIsSubmitting(false);
+    try {
+      // Map form data to API format
+      const signupData = {
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        password: formData.password,
+        company: formData.company || undefined,
+      };
+
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signupData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUserEmail(formData.email);
+        setShowOTPForm(true);
+        toast({
+          title: "Account Created!",
+          description: "Please check your email for the OTP code.",
+          variant: "success",
+        });
+      } else {
+        // Show detailed error message
+        const errorMessage = data.details 
+          ? data.details.map((d: any) => d.message).join(", ")
+          : data.message || data.error || "Something went wrong. Please try again.";
+        
+        toast({
+          title: "Signup Failed",
+          description: errorMessage,
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Network error. Please check your connection and try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const handleOTPSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsVerifyingOTP(true);
+
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          otp: otp,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Email Verified!",
+          description: "Your account has been verified. You can now sign in.",
+          variant: "success",
+        });
+        // Redirect to signin after a short delay
+        setTimeout(() => {
+          router.push("/signin");
+        }, 2000);
+      } else {
+        toast({
+          title: "Verification Failed",
+          description: data.error || "Invalid OTP. Please try again.",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Network error. Please check your connection and try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsVerifyingOTP(false);
+    }
+  };
+
+  // OTP Verification Form
+  if (showOTPForm) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="bg-card border border-border/30 rounded-3xl p-8 shadow-2xl shadow-foreground/5 animate-scale-in">
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Shield className="w-10 h-10 text-primary" />
+              </div>
+              <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+                Verify Your Email
+              </h1>
+              <p className="text-muted-foreground">
+                We've sent a 6-digit OTP to <br />
+                <span className="font-semibold text-foreground">{userEmail}</span>
+              </p>
+            </div>
+
+            <form onSubmit={handleOTPSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Enter OTP
+                </label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  required
+                  maxLength={6}
+                  className="
+                    w-full px-6 py-4 rounded-2xl text-center text-2xl font-mono tracking-widest
+                    border border-border/30 bg-background
+                    text-foreground
+                    focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10
+                    transition-all duration-300
+                  "
+                  placeholder="000000"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variant="hero"
+                size="xl"
+                className="w-full group relative overflow-hidden"
+                disabled={isVerifyingOTP || otp.length !== 6}
+              >
+                {isVerifyingOTP ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                    Verifying...
+                  </div>
+                ) : (
+                  <>
+                    Verify OTP
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </Button>
+            </form>
+
+            <div className="text-center mt-6">
+              <button
+                onClick={() => setShowOTPForm(false)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Back to signup
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Signup Form
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left Side - Hero/Illustration */}
@@ -90,12 +264,6 @@ const SignUp = () => {
               Start your journey with LaunchDock
             </p>
           </div>
-
-        {successMessage && (
-          <div className="mb-6 p-4 rounded-2xl bg-green-50 border border-green-200 animate-slide-up">
-            <p className="text-sm text-green-700">{successMessage}</p>
-          </div>
-        )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">

@@ -31,7 +31,7 @@ const Navbar = () => {
           : "bg-transparent py-6"
       }`}
     >
-      <div className="container mx-auto px-6 flex items-center justify-between">
+      <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-3">
         <a href="#" className="flex items-center gap-2 group">
           <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
             <Rocket className="w-5 h-5 text-primary" />

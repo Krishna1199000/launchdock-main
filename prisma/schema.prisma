@@ -12,19 +12,72 @@ enum Role {
   CLIENT
 }
 
+enum TalkMode {
+  PHONE
+  VIDEO
+  CHAT
+  SCHEDULE
+}
+
+enum TalkStatus {
+  WAITING
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  ASYNC
+  CANCELLED
+}
+
 model User {
+  id             String         @id @default(cuid())
+  email          String         @unique
+  passwordHash   String
+  name           String
+  phone          String?
+  company        String?
+  role           Role           @default(CLIENT)
+  isEmailVerified Boolean       @default(false)
+  projects       Project[]
+  messages       Message[]
+  tickets        Ticket[]
+  payments       Payment[]
+  talkRequests   TalkRequest[]
+  otps           Otp[]
+  createdAt      DateTime       @default(now())
+}
+
+model TalkRequest {
+  id           String      @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  requirement  String
+  mode         TalkMode
+  immediate    Boolean     @default(false)
+  scheduledFor DateTime?
+  status       TalkStatus  @default(WAITING)
+  roomId       String?
+  meetingLink  String?
+  transcript   Json?
+  user         User?       @relation(fields: [userId], references: [id])
+  userId       String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([mode, status, scheduledFor])
+  @@index([createdAt])
+}
+
+model Otp {
   id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hashed
-  name      String
-  phone     String?
-  company   String?
-  role      Role     @default(CLIENT)
-  projects  Project[]
-  messages  Message[]
-  tickets   Ticket[]
-  payments  Payment[]
+  email     String
+  code      String
+  expiresAt DateTime
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
   createdAt DateTime @default(now())
+
+  @@index([email])
 }
 
 model Project {

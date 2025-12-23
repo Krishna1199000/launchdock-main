@@ -1,19 +1,23 @@
 "use client"
 import { useState } from "react";
-import { 
-  Mail, 
-  Phone, 
-  MessageCircle, 
-  MapPin, 
+import {
+  Mail,
+  Phone,
+  MessageCircle,
+  MapPin,
   Clock,
   ArrowRight,
   Calendar,
   Send,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const Contact = () => {
+type Props = {
+  onSchedule?: () => void;
+};
+
+const Contact = ({ onSchedule }: Props) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -397,12 +401,10 @@ const Contact = () => {
                   variant="hero-outline" 
                   size="lg"
                   className="w-full group"
-                  asChild
+                  onClick={onSchedule}
                 >
-                  <a href="https://calendly.com/launchdock" target="_blank" rel="noopener noreferrer">
-                    Schedule a Call
-                    <Calendar className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  </a>
+                  Schedule a Call
+                  <Calendar className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 </Button>
               </div>
 
@@ -411,6 +413,7 @@ const Contact = () => {
                 variant="outline" 
                 size="lg"
                 className="w-full group"
+                onClick={onSchedule}
               >
                 Talk to an Expert
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

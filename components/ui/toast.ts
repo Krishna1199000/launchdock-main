@@ -10,5 +10,6 @@ export interface ToastProps {
   duration?: number;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  variant?: "default" | "success" | "error";
 }
 

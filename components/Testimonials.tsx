@@ -90,17 +90,6 @@ const Testimonials = () => {
           ))}
         </div>
 
-        {/* Logos Section */}
-        <div className="mt-24 text-center">
-          <p className="text-muted-foreground mb-8">Trusted by innovative companies worldwide</p>
-          <div className="flex flex-wrap items-center justify-center gap-12 opacity-50">
-            {["Stripe", "Vercel", "Linear", "Notion", "Figma"].map((company, i) => (
-              <span key={i} className="font-display text-2xl font-bold text-muted-foreground/50">
-                {company}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

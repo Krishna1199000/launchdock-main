@@ -1,41 +1,82 @@
 "use client"
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { 
   Eye, 
   EyeOff, 
   Mail, 
   Lock, 
-  ArrowRight,
-  AlertCircle
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 const SignIn = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (error) setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");
 
-    // Placeholder: connect to real authentication
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setError("Authentication is not yet connected. Please try again later.");
-    setIsSubmitting(false);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store user data in localStorage
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+        
+        toast({
+          title: "Sign In Successful!",
+          description: "Welcome back to LaunchDock.",
+          variant: "success",
+        });
+        // Redirect based on role
+        setTimeout(() => {
+          if (data.user.role === "ADMIN") {
+            router.push("/admin");
+          } else {
+            router.push("/dashboard/client");
+          }
+        }, 1500);
+      } else {
+        toast({
+          title: "Sign In Failed",
+          description: data.error || "Invalid email or password. Please try again.",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Network error. Please check your connection and try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -64,16 +105,6 @@ const SignIn = () => {
               Sign in to your LaunchDock account
             </p>
           </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 animate-slide-up">
-              <div className="flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500" />
-                <p className="text-red-700 text-sm">{error}</p>
-              </div>
-            </div>
-          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">

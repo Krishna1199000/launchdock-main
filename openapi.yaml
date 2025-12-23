@@ -1,0 +1,327 @@
+openapi: 3.0.0
+info:
+  title: LaunchDock API
+  version: 1.0.0
+  description: Production-ready client dashboard API
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+  - url: https://api.launchdock.me/api
+    description: Production server
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Projects
+    description: Project management
+  - name: Messages
+    description: Real-time messaging
+  - name: Files
+    description: File upload and management
+  - name: Payments
+    description: Stripe payment integration
+  - name: Tickets
+    description: Support tickets
+  - name: Profile
+    description: User profile management
+
+paths:
+  /auth/signup:
+    post:
+      tags: [Auth]
+      summary: Create user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                phone:
+                  type: string
+      responses:
+        '201':
+          description: Account created
+        '400':
+          description: Validation error
+
+  /auth/signin:
+    post:
+      tags: [Auth]
+      summary: Sign in user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Sign in successful
+        '401':
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User data
+        '401':
+          description: Unauthorized
+
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of projects
+    post:
+      tags: [Projects]
+      summary: Create project
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, type]
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                description:
+                  type: string
+                deadline:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: Project created
+
+  /projects/{id}:
+    get:
+      tags: [Projects]
+      summary: Get project detail
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project details
+    patch:
+      tags: [Projects]
+      summary: Update project
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                status:
+                  type: string
+                  enum: [REQUIREMENTS_NEEDED, PLANNING, DESIGN, DEVELOPMENT, TESTING, REVIEW, COMPLETED]
+                progress:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+      responses:
+        '200':
+          description: Project updated
+
+  /projects/{projectId}/messages:
+    get:
+      tags: [Messages]
+      summary: Get messages
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of messages
+    post:
+      tags: [Messages]
+      summary: Send message
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+                type:
+                  type: string
+                  enum: [TEXT, FILE]
+                fileId:
+                  type: string
+      responses:
+        '201':
+          description: Message sent
+
+  /uploads/presign:
+    post:
+      tags: [Files]
+      summary: Get presigned upload URL
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filename, mimeType]
+              properties:
+                filename:
+                  type: string
+                mimeType:
+                  type: string
+                projectId:
+                  type: string
+      responses:
+        '200':
+          description: Presigned URL generated
+
+  /files:
+    post:
+      tags: [Files]
+      summary: Create file record
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filename, mime, size, url, storageKey]
+              properties:
+                filename:
+                  type: string
+                mime:
+                  type: string
+                size:
+                  type: integer
+                url:
+                  type: string
+                storageKey:
+                  type: string
+                projectId:
+                  type: string
+      responses:
+        '201':
+          description: File record created
+
+  /payments/create-checkout-session:
+    post:
+      tags: [Payments]
+      summary: Create Stripe checkout session
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount:
+                  type: number
+                projectId:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Checkout session created
+
+securitySchemes:
+  cookieAuth:
+    type: apiKey
+    in: cookie
+    name: auth-token
+
+
+
+
+
+
+
+
