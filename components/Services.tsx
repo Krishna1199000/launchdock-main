@@ -42,13 +42,13 @@ const services = [
 
 const Services = () => {
   return (
-    <section id="services" className="py-32 relative">
+    <section id="services" className="py-16 relative">
       {/* Background Effect */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[150px]" />
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
             Our Services
           </span>

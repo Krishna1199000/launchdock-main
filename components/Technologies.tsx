@@ -75,7 +75,7 @@ const Technologies = () => {
   }, []);
 
   return (
-    <section id="technologies" className="py-32 relative overflow-hidden">
+    <section id="technologies" className="py-16 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse-glow" />
@@ -84,7 +84,7 @@ const Technologies = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full mb-6 animate-slide-up">
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-primary font-semibold text-sm uppercase tracking-wider">
@@ -161,7 +161,7 @@ const Technologies = () => {
         </div>
 
         {/* Floating Tech Badges */}
-        <div className="mt-20 relative">
+        <div className="mt-12 relative">
           <div className="flex flex-wrap items-center justify-center gap-4">
             {Object.values(technologies).flatMap(({ techs }) => 
               techs.slice(0, 3).map((tech, index) => (

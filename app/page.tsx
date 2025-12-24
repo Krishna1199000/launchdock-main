@@ -27,20 +27,20 @@ const Index = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <Hero />
-        <Services />
-        <Technologies />
-        <WhyChooseUs />
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <Hero />
+      <Services />
+      <Technologies />
+      <WhyChooseUs />
         <OurProcess onAction={openTalk} />
-        <Portfolio />
-        <Testimonials />
+      <Portfolio />
+      <Testimonials />
         <Pricing onPlanAction={() => openTalk()} />
-        <Blog />
+      <Blog />
         <CTA onAction={openTalk} onViewProcess={scrollProcess} />
         <Contact onSchedule={openTalk} />
-      </div>
+    </div>
       <TalkToExpertModal open={talkOpen} onClose={closeTalk} />
       <ChatWidget />
     </>

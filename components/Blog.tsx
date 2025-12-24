@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const blogPosts = [
   {
@@ -102,7 +103,7 @@ const Blog = () => {
   }, [selectedCategory]);
 
   return (
-    <section id="blog" className="py-32 relative bg-background">
+    <section id="blog" className="py-16 relative bg-background">
       {/* Subtle Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-pulse-glow" />
@@ -111,7 +112,7 @@ const Blog = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-4xl mx-auto mb-16">
+        <div className="text-center max-w-4xl mx-auto mb-10">
           <h2 
             className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground animate-slide-up"
           >
@@ -127,7 +128,7 @@ const Blog = () => {
         </div>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-16 animate-fade-in">
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-10 animate-fade-in">
           {categories.map((category) => (
             <button
               key={category}
@@ -146,35 +147,37 @@ const Blog = () => {
         </div>
 
         {/* Blog Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {filteredPosts.map((post, index) => {
             const isVisible = visiblePosts.has(post.id);
             
-            return (
-              <article
-                key={post.id}
-                className="group relative"
-                style={{
-                  animation: `slide-up-scale 0.8s ease-out forwards`,
-                  animationDelay: `${index * 0.1}s`,
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.9)'
-                }}
-              >
-                <div className="
-                  h-full
-                  bg-card
-                  border border-border/30
-                  rounded-3xl
-                  overflow-hidden
-                  transition-all duration-700
-                  hover:shadow-2xl
-                  hover:shadow-foreground/5
-                  hover:-translate-y-4
-                  hover:border-primary/30
-                  group-hover:bg-card/80
-                  backdrop-blur-sm
-                ">
+              return (
+                <article
+                  key={post.id}
+                  className="group relative"
+                  style={{
+                    animation: `slide-up-scale 0.8s ease-out forwards`,
+                    animationDelay: `${index * 0.1}s`,
+                    opacity: isVisible ? 1 : 0,
+                    transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.9)'
+                  }}
+                >
+                  <Link href={`/blog/${post.id}`}>
+                    <div className="
+                      h-full
+                      bg-card
+                      border border-border/30
+                      rounded-3xl
+                      overflow-hidden
+                      transition-all duration-700
+                      hover:shadow-2xl
+                      hover:shadow-foreground/5
+                      hover:-translate-y-4
+                      hover:border-primary/30
+                      group-hover:bg-card/80
+                      backdrop-blur-sm
+                      cursor-pointer
+                    ">
                   {/* Image */}
                   <div className="relative h-56 overflow-hidden">
                     <img
@@ -225,7 +228,7 @@ const Blog = () => {
                           {post.readTime}
                         </div>
                       </div>
-                      <a
+                      <Link
                         href={`/blog/${post.id}`}
                         className="
                           flex items-center gap-2 text-sm font-semibold text-primary
@@ -235,11 +238,12 @@ const Blog = () => {
                       >
                         Read More
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
-                </div>
-              </article>
+                  </div>
+                  </Link>
+                </article>
             );
           })}
         </div>

@@ -27,13 +27,13 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section id="testimonials" className="py-32 relative overflow-hidden">
+    <section id="testimonials" className="py-16 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
             Testimonials
           </span>

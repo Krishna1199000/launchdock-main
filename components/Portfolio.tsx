@@ -77,7 +77,7 @@ const Portfolio = () => {
   const duplicated = useMemo(() => [...projects, ...projects], []);
 
   return (
-    <section id="work" className="relative overflow-hidden py-28 sm:py-32">
+    <section id="work" className="relative overflow-hidden py-16 sm:py-20">
       {/* Background vibes */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-32 left-[-10%] h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
@@ -87,7 +87,7 @@ const Portfolio = () => {
 
       <div className="container relative z-10 mx-auto px-6">
         {/* Section Header */}
-        <div className="mb-10 flex flex-col gap-5 md:mb-14 md:flex-row md:items-end md:justify-between">
+        <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
               <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_0_6px_rgba(59,130,246,0.35)]" />
@@ -97,7 +97,7 @@ const Portfolio = () => {
               Featured work{" "}
               <span className="bg-gradient-to-r from-primary via-sky-400 to-violet-500 bg-clip-text text-transparent">
                 that feels bespoke
-              </span>
+            </span>
             </h2>
             <p className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">
               A refined gallery with subtle motion, live spotlighting, and concise
@@ -138,14 +138,14 @@ const Portfolio = () => {
         </div>
 
         {/* Layout: carousel + spotlight */}
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           {/* Carousel */}
           <div className="relative">
             <div className="absolute -left-10 top-10 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
             <div className="absolute -right-10 bottom-10 h-24 w-24 rounded-full bg-violet-500/10 blur-2xl" />
 
             <div className="grid gap-6 md:grid-cols-2">
-              {projects.map((project, index) => (
+          {projects.map((project, index) => (
                 <motion.div
                   key={project.title}
                   className={`group relative overflow-hidden rounded-2xl border border-border/60 bg-card text-left shadow-[0_18px_60px_rgba(15,23,42,0.25)] transition-all duration-400 ${
@@ -181,11 +181,11 @@ const Portfolio = () => {
                   }}
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
+                <img
+                  src={project.image}
+                  alt={project.title}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-103"
-                    />
+                />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
 
                     <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-2">
@@ -274,7 +274,7 @@ const Portfolio = () => {
                       </span>
                       <span className="text-white/80">
                         {activeProject.metric}
-                      </span>
+                </span>
                     </div>
                     <ArrowUpRight className="h-4 w-4 text-white/80" />
                   </motion.div>

@@ -47,7 +47,7 @@ const features = [
 
 const WhyChooseUs = () => {
   return (
-    <section id="why-choose-us" className="py-32 relative bg-background">
+    <section id="why-choose-us" className="py-16 relative bg-background">
       {/* Subtle Background Effects - Very minimal */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-foreground/1 rounded-full blur-[120px]" />
@@ -56,7 +56,7 @@ const WhyChooseUs = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-20">
+        <div className="text-center max-w-4xl mx-auto mb-10">
           <h2 
             className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground animate-slide-up"
           >
@@ -72,13 +72,13 @@ const WhyChooseUs = () => {
         </div>
 
         {/* Features List - Vertical Timeline Style */}
-        <div className="max-w-5xl mx-auto mb-20">
+        <div className="max-w-5xl mx-auto mb-10">
           <div className="relative">
             {/* Vertical Line (hidden on mobile) */}
             <div className="hidden md:block absolute left-8 top-0 bottom-0 w-px bg-border/30" />
             
             {/* Features */}
-            <div className="space-y-16 md:space-y-24">
+            <div className="space-y-10 md:space-y-12">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 const isEven = index % 2 === 0;
@@ -155,7 +155,7 @@ const WhyChooseUs = () => {
         {/* CTA Section */}
         <div className="text-center animate-fade-in" style={{ animationDelay: '0.8s', opacity: 0 }}>
           <div className="inline-block max-w-2xl">
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 font-light tracking-tight">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-6 font-light tracking-tight">
               Let's Build Something Amazing Together
             </p>
             <Button 

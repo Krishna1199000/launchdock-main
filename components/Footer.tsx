@@ -1,5 +1,6 @@
 "use client"
 import { Rocket, Github, Twitter, Linkedin, Instagram } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   const footerLinks = {
@@ -12,7 +13,7 @@ const Footer = () => {
     Company: [
       { name: "About Us", href: "#" },
       { name: "Careers", href: "#" },
-      { name: "Blog", href: "#" },
+      { name: "Blog", href: "/blog" },
       { name: "Contact", href: "#" },
     ],
     Resources: [

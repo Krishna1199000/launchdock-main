@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
+import { 
   MessageSquare,
   Map,
   Palette,
@@ -119,7 +119,7 @@ const OurProcess = ({ onAction }: Props) => {
   return (
     <section
       id="our-process"
-      className="relative overflow-hidden bg-background py-28 sm:py-32"
+      className="relative overflow-hidden bg-background py-16 sm:py-20"
     >
       {/* Background orbits */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -130,7 +130,7 @@ const OurProcess = ({ onAction }: Props) => {
 
       <div className="container relative z-10 mx-auto px-6">
         {/* Header */}
-        <div className="mx-auto mb-16 max-w-4xl text-center">
+        <div className="mx-auto mb-10 max-w-4xl text-center">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary/80 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_0_6px_rgba(59,130,246,0.35)]" />
             Our Process
@@ -173,14 +173,14 @@ const OurProcess = ({ onAction }: Props) => {
                 </span>
                 <span>Scroll or hover through the journey</span>
               </div>
-            </div>
+          </div>
 
             <div className="space-y-4 sm:space-y-5">
-              {processSteps.map((step, index) => {
-                const Icon = step.icon;
+            {processSteps.map((step, index) => {
+              const Icon = step.icon;
                 const isActive = index === activeIndex;
-
-                return (
+              
+              return (
                   <motion.button
                     key={step.title}
                     type="button"
@@ -402,17 +402,17 @@ const OurProcess = ({ onAction }: Props) => {
                       We’ll map your product into this process and show you the
                       potential impact before we write a single line of code.
                     </p>
-                  </div>
+        </div>
 
-                  <Button
-                    variant="hero"
+          <Button 
+            variant="hero" 
                     size="lg"
                     className="group w-full justify-center sm:w-auto shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40"
                     onClick={onAction}
                   >
                     Book a build session
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Button>
+          </Button>
                 </div>
               </div>
             </div>

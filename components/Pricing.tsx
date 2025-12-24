@@ -121,7 +121,7 @@ const Pricing = ({ onPlanAction }: Props) => {
   }, []);
 
   return (
-    <section id="pricing" className="py-32 relative bg-background">
+    <section id="pricing" className="py-16 relative bg-background">
       {/* Subtle Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[150px] animate-pulse-glow" />
@@ -129,7 +129,7 @@ const Pricing = ({ onPlanAction }: Props) => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-4xl mx-auto mb-20">
+        <div className="text-center max-w-4xl mx-auto mb-10">
           <h2 
             className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground animate-slide-up"
           >
@@ -145,7 +145,7 @@ const Pricing = ({ onPlanAction }: Props) => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-24 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 max-w-7xl mx-auto">
           {plans.map((plan, index) => {
             const Icon = plan.icon;
             const isVisible = visiblePlans.has(plan.id);

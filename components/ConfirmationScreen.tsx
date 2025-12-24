@@ -63,3 +63,5 @@ const ConfirmationScreen = ({ mode, summary, onReset }: Props) => (
 
 export default ConfirmationScreen;
 
+
+

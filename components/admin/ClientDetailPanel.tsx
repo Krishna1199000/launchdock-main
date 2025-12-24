@@ -126,3 +126,5 @@ export default function ClientDetailPanel({ client, onClose }: ClientDetailPanel
 
 
 
+
+

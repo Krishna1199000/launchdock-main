@@ -1,10 +1,10 @@
 "use client"
 import { useState } from "react";
-import {
-  Mail,
-  Phone,
-  MessageCircle,
-  MapPin,
+import { 
+  Mail, 
+  Phone, 
+  MessageCircle, 
+  MapPin, 
   Clock,
   ArrowRight,
   Calendar,
@@ -41,7 +41,7 @@ const Contact = ({ onSchedule }: Props) => {
   };
 
   return (
-    <section id="contact" className="py-32 relative bg-background">
+    <section id="contact" className="py-16 relative bg-background">
       {/* Subtle Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-foreground/1 rounded-full blur-[120px]" />
@@ -49,7 +49,7 @@ const Contact = ({ onSchedule }: Props) => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-4xl mx-auto mb-20">
+        <div className="text-center max-w-4xl mx-auto mb-10">
           <h2 
             className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground animate-slide-up"
           >
@@ -65,7 +65,7 @@ const Contact = ({ onSchedule }: Props) => {
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-20">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12">
             {/* Form Section */}
             <div className="animate-fade-in" style={{ animationDelay: '0.2s', opacity: 0 }}>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -403,8 +403,8 @@ const Contact = ({ onSchedule }: Props) => {
                   className="w-full group"
                   onClick={onSchedule}
                 >
-                  Schedule a Call
-                  <Calendar className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    Schedule a Call
+                    <Calendar className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 </Button>
               </div>
 
