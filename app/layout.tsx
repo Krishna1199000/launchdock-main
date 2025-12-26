@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
+import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,6 +73,8 @@ export default function RootLayout({
       >
         {children}
         <Footer />
+        <CookieConsent />
+        <Analytics />
         <Toaster />
       </body>
     </html>

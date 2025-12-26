@@ -30,38 +30,19 @@ export default function AdminDashboard() {
 
   const fetchDashboardStats = async () => {
     try {
-      const [usersRes, projectsRes, paymentsRes, messagesRes] = await Promise.all([
-        fetch("/api/admin/users"),
-        fetch("/api/admin/projects"),
-        fetch("/api/payments"),
-        fetch("/api/projects?limit=100"),
-      ]);
-
-      const users = usersRes.ok ? await usersRes.json() : { users: [] };
-      const projects = projectsRes.ok ? await projectsRes.json() : { projects: [] };
-      const payments = paymentsRes.ok ? await paymentsRes.json() : { payments: [] };
-      const allProjects = messagesRes.ok ? await messagesRes.json() : { projects: [] };
-
-      const totalRevenue = payments.payments
-        ?.filter((p: any) => p.status === "PAID")
-        .reduce((sum: number, p: any) => sum + (p.amount || 0), 0) || 0;
-
-      const pendingPayments = payments.payments?.filter(
-        (p: any) => p.status === "PENDING"
-      ).length || 0;
-
-      const activeProjects = projects.projects?.filter(
-        (p: any) => p.status !== "COMPLETED"
-      ).length || 0;
-
-      setStats({
-        totalClients: users.users?.length || 0,
-        totalProjects: projects.projects?.length || 0,
-        totalRevenue: totalRevenue / 100, // Convert cents to dollars
-        pendingPayments,
-        activeProjects,
-        unreadMessages: 0, // Would need separate endpoint
-      });
+      // Use the new unified stats API endpoint
+      const response = await fetch("/api/admin/stats");
+      if (response.ok) {
+        const data = await response.json();
+        setStats({
+          totalClients: data.stats.totalClients,
+          totalProjects: data.stats.totalProjects,
+          totalRevenue: data.stats.totalRevenue,
+          pendingPayments: data.stats.pendingPayments,
+          activeProjects: data.stats.activeProjects,
+          unreadMessages: data.stats.unreadMessages,
+        });
+      }
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {

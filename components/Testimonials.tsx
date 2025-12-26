@@ -3,24 +3,24 @@ import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Sarah Chen",
-    role: "CEO, TechStart",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
-    content: "LaunchDock transformed our vision into reality. Their team delivered a stunning web app that exceeded all our expectations. The attention to detail was remarkable.",
+    name: "Urmil Vadhvana",
+    role: "Founder, Cranberri Diamonds",
+    emoji: "👨‍💼",
+    content: "LaunchDock built an exceptional e-commerce platform for Cranberri Diamonds. Their expertise in Next.js, Prisma, and AWS helped us create a scalable solution with comprehensive admin, employee, and customer management systems. Highly professional and reliable team!",
     rating: 5,
   },
   {
-    name: "Marcus Johnson",
-    role: "Founder, FinFlow",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
-    content: "Working with LaunchDock was a game-changer. They understood our fintech needs and built a platform that our users love. Highly recommend their services.",
+    name: "Tejas Bhosle",
+    role: "Founder, Mothers Aura Diamonds",
+    emoji: "👨‍💼",
+    content: "Working with LaunchDock was a game-changer for Mothers Aura Diamonds. They delivered a premium diamond e-commerce solution with advanced features and enterprise-grade infrastructure. The platform has been instrumental in our business growth.",
     rating: 5,
   },
   {
-    name: "Emily Rodriguez",
-    role: "CTO, HealthHub",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
-    content: "The mobile app they developed for us has received incredible user feedback. Professional team, on-time delivery, and outstanding quality. A true partner!",
+    name: "Navin",
+    role: "Founder, Humjoli Pvt Limited",
+    emoji: "👨‍💼",
+    content: "LaunchDock is developing an outstanding event management platform for Humjoli. Their modern web technologies and seamless user experience approach have been impressive. Professional team with excellent communication throughout the development process.",
     rating: 5,
   },
 ];
@@ -72,11 +72,9 @@ const Testimonials = () => {
 
               {/* Author */}
               <div className="flex items-center gap-4">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
-                />
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl ring-2 ring-primary/20">
+                  {testimonial.emoji}
+                </div>
                 <div>
                   <div className="font-semibold text-foreground">
                     {testimonial.name}

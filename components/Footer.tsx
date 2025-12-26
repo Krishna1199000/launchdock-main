@@ -1,34 +1,37 @@
 "use client"
-import { Rocket, Github, Twitter, Linkedin, Instagram } from "lucide-react";
+import Image from "next/image";
+import { Github, Twitter, Linkedin, Instagram } from "lucide-react";
 import Link from "next/link";
 
 const Footer = () => {
   const footerLinks = {
     Services: [
-      { name: "Web Development", href: "#" },
-      { name: "Mobile Apps", href: "#" },
-      { name: "UI/UX Design", href: "#" },
-      { name: "MVP Development", href: "#" },
+      { name: "Web Development", href: "/services/web-development" },
+      { name: "Mobile Apps", href: "/services/mobile-apps" },
+      { name: "UI/UX Design", href: "/services/ui-ux-design" },
+      { name: "MVP Development", href: "/services/mvp-development" },
+      { name: "Custom Software", href: "/services/custom-software" },
+      { name: "Digital Strategy", href: "/services/digital-strategy" },
     ],
     Company: [
-      { name: "About Us", href: "#" },
-      { name: "Careers", href: "#" },
+      { name: "About Us", href: "/about" },
+      { name: "Careers", href: "/careers" },
       { name: "Blog", href: "/blog" },
-      { name: "Contact", href: "#" },
+      { name: "Contact", href: "/contact" },
     ],
     Resources: [
-      { name: "Case Studies", href: "#" },
-      { name: "Documentation", href: "#" },
-      { name: "Support", href: "#" },
-      { name: "FAQ", href: "#" },
+      { name: "Case Studies", href: "/case-studies" },
+      { name: "Documentation", href: "/documentation" },
+      { name: "Support", href: "/support" },
+      { name: "FAQ", href: "/faq" },
     ],
   };
 
   const socialLinks = [
-    { icon: Twitter, href: "#" },
-    { icon: Linkedin, href: "#" },
-    { icon: Github, href: "#" },
-    { icon: Instagram, href: "#" },
+    { icon: Twitter, href: "https://x.com/launchdock_dev" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/launch-dock-2677b83a1/" },
+    { icon: Github, href: "https://github.com/Krishna1199000" },
+    { icon: Instagram, href: "https://www.instagram.com/launchdock.dev/" },
   ];
 
   return (
@@ -37,13 +40,14 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <a href="#" className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Rocket className="w-5 h-5 text-primary" />
-              </div>
-              <span className="font-display text-xl font-bold text-foreground">
-                Launch<span className="text-primary">Dock</span>
-              </span>
+            <a href="#" className="flex items-center mb-6">
+              <Image 
+                src="/launchdocklogo1.png" 
+                alt="LaunchDock Logo" 
+                width={150} 
+                height={40}
+                className="object-contain h-10"
+              />
             </a>
             <p className="text-muted-foreground mb-6 max-w-sm">
               We build digital products that help startups and businesses 
@@ -91,15 +95,15 @@ const Footer = () => {
             © 2024 LaunchDock. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-primary transition-colors">
+            <Link href="/privacy" className="hover:text-primary transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
+            </Link>
+            <Link href="/terms" className="hover:text-primary transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
+            </Link>
+            <Link href="/cookies" className="hover:text-primary transition-colors">
               Cookie Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>

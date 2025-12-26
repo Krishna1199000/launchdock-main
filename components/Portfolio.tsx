@@ -4,53 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
-
-const projects = [
-  {
-    title: "FinTech Dashboard",
-    category: "Web Application",
-    description:
-      "Realtime analytics, advanced order routing, and portfolio views built with bank-grade security.",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop",
-    tags: ["Next.js", "tRPC", "PostgreSQL", "Tailwind"],
-    metric: "+42% activation in first 14 days",
-    accent: "from-emerald-400/30 via-sky-400/35 to-blue-500/35",
-  },
-  {
-    title: "E-Commerce Platform",
-    category: "Web & Mobile",
-    description:
-      "Multi-vendor marketplace with cinematic product cards, blazing-fast checkout, and unified ops.",
-    image:
-      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=800&fit=crop",
-    tags: ["Next.js", "Stripe", "AWS", "Edge Caching"],
-    metric: "-28% cart drop-off after redesign",
-    accent: "from-amber-400/30 via-orange-500/35 to-rose-500/35",
-  },
-  {
-    title: "Health & Fitness App",
-    category: "Mobile Application",
-    description:
-      "AI-personalized plans, realtime progress loops, and community features that keep users engaged.",
-    image:
-      "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=1200&h=800&fit=crop",
-    tags: ["React Native", "AI/ML", "Firebase", "App Clips"],
-    metric: "+63% weekly retention after launch",
-    accent: "from-pink-400/30 via-fuchsia-500/35 to-violet-500/35",
-  },
-  {
-    title: "SaaS Analytics Tool",
-    category: "Web Application",
-    description:
-      "Executive-grade dashboards with anomaly alerts, cohorting, and self-serve experimentation.",
-    image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=800&fit=crop",
-    tags: ["Vue", "Python", "Docker", "D3"],
-    metric: "P99 dashboards under 300ms",
-    accent: "from-indigo-400/30 via-blue-500/35 to-cyan-400/35",
-  },
-];
+import Link from "next/link";
+import { projects } from "@/lib/projects";
 
 const useParallaxTilt = () => {
   const x = useMotionValue(0);
@@ -63,6 +18,7 @@ const useParallaxTilt = () => {
 const Portfolio = () => {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
   const activeProject = projects[active];
   const { x, y, rotateX, rotateY } = useParallaxTilt();
 
@@ -105,10 +61,12 @@ const Portfolio = () => {
             </p>
           </div>
 
-          <Button variant="hero-outline" className="self-start md:self-auto">
-            View All Projects
-            <ArrowUpRight className="h-4 w-4" />
-          </Button>
+          <Link href="/projects">
+            <Button variant="hero-outline" className="self-start md:self-auto group">
+              View All Projects
+              <ArrowUpRight className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
 
         {/* Auto-marquee rail */}
@@ -148,9 +106,14 @@ const Portfolio = () => {
           {projects.map((project, index) => (
                 <motion.div
                   key={project.title}
-                  className={`group relative overflow-hidden rounded-2xl border border-border/60 bg-card text-left shadow-[0_18px_60px_rgba(15,23,42,0.25)] transition-all duration-400 ${
+                  className={`group relative overflow-hidden rounded-2xl border border-border/60 bg-card text-left shadow-[0_18px_60px_rgba(15,23,42,0.25)] transition-all duration-400 cursor-pointer ${
                     active === index ? "ring-2 ring-primary/50 ring-offset-2 ring-offset-background" : ""
                   }`}
+                  onClick={() => {
+                    if (project.url) {
+                      window.open(project.url, '_blank', 'noopener,noreferrer');
+                    }
+                  }}
                   onMouseEnter={() => {
                     setActive(index);
                     setAuto(false);
@@ -180,11 +143,14 @@ const Portfolio = () => {
                     transformStyle: "preserve-3d",
                   }}
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
                 <img
-                  src={project.image}
+                  src={imageErrors.has(project.title) ? "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&h=800&fit=crop&q=80" : project.image}
                   alt={project.title}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-103"
+                  onError={() => {
+                    setImageErrors(prev => new Set([...prev, project.title]));
+                  }}
                 />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
 
@@ -201,8 +167,16 @@ const Portfolio = () => {
                       </p>
                     </div>
 
-                    <div className="absolute top-4 right-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-medium text-white backdrop-blur">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    <div className={`absolute top-4 right-4 flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium text-white backdrop-blur ${
+                      project.status === 'live' 
+                        ? 'bg-emerald-500/20' 
+                        : 'bg-amber-500/20'
+                    }`}>
+                      <span className={`h-1.5 w-1.5 rounded-full ${
+                        project.status === 'live' 
+                          ? 'bg-emerald-400' 
+                          : 'bg-amber-400'
+                      }`} />
                       {project.metric}
                     </div>
                   </div>
@@ -245,22 +219,33 @@ const Portfolio = () => {
                     {activeProject.title}
                   </p>
                 </div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-medium text-emerald-300 ring-1 ring-emerald-400/40">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                  In production
+                <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium ring-1 ${
+                  activeProject.status === 'live'
+                    ? 'bg-emerald-500/10 text-emerald-300 ring-emerald-400/40'
+                    : 'bg-amber-500/10 text-amber-300 ring-amber-400/40'
+                }`}>
+                  <span className={`h-2 w-2 rounded-full ${
+                    activeProject.status === 'live'
+                      ? 'bg-emerald-400'
+                      : 'bg-amber-400'
+                  }`} />
+                  {activeProject.status === 'live' ? 'Live' : 'In Development'}
                 </div>
               </div>
 
               <div className="relative mt-5 overflow-hidden rounded-2xl border border-border/80 bg-black/80">
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-64 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
                   <motion.img
                     key={activeProject.image}
-                    src={activeProject.image}
+                    src={imageErrors.has(activeProject.title) ? "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&h=800&fit=crop&q=80" : activeProject.image}
                     alt={activeProject.title}
                     className="h-full w-full object-cover"
                     initial={{ opacity: 0.5, scale: 1.04 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
+                    onError={() => {
+                      setImageErrors(prev => new Set([...prev, activeProject.title]));
+                    }}
                   />
                   <motion.div
                     className="absolute inset-x-6 bottom-6 flex items-center justify-between rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-xs text-white backdrop-blur"
@@ -286,10 +271,19 @@ const Portfolio = () => {
                   What we shipped
                 </p>
                 <p>
-                  {activeProject.description} We layered in expressive motion,
-                  disciplined performance budgets, and clear storytelling so the
-                  product feels both premium and high-trust.
+                  {activeProject.description}
                 </p>
+                {activeProject.url && (
+                  <a
+                    href={activeProject.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-3 text-primary hover:text-primary/80 transition-colors"
+                  >
+                    Visit Website
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                )}
                 <div className="flex flex-wrap gap-2">
                   {activeProject.tags.map((tag) => (
                     <span

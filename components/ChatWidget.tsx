@@ -188,7 +188,7 @@ const ChatWidget = () => {
                           value={(emailForm as any)[field]}
                           onChange={(e) => setEmailForm({ ...emailForm, [field]: e.target.value })}
                           className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-teal-300/70"
-                          placeholder={field === "phone" ? "+1 555 123 4567" : ""}
+                          placeholder={field === "phone" ? "+1 555 123 4567" : field === "name" ? "your name" : "your@email.com"}
                         />
                       </label>
                     ))}
@@ -258,9 +258,9 @@ const ChatWidget = () => {
                             className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-teal-300/70"
                             placeholder={
                               chatStep === 0
-                                ? "Your name"
+                                ? "your name"
                                 : chatStep === 1
-                                ? "Email or phone"
+                                ? "your@email.com"
                                 : "Tell us what you need"
                             }
                             disabled={sending}

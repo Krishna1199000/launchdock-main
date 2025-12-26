@@ -43,7 +43,7 @@ const blogPosts = [
     title: "Why Branding Matters More than Ever",
     description: "Learn how strong branding can differentiate your business and create lasting customer connections.",
     category: "Branding",
-    image: "https://images.unsplash.com/photo-1561070791-2526d93794bc?w=800&h=600&fit=crop",
+    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=600&fit=crop&q=80",
     readTime: "7 min read",
     content: `
       <h2>Introduction</h2>

@@ -18,7 +18,7 @@ type Props = {
 
 const modes: { id: Mode; title: string; desc: string; icon: React.ElementType }[] = [
   { id: "phone", title: "Phone Call", desc: "Talk with an expert right now or schedule a callback.", icon: PhoneCall },
-  { id: "video", title: "Video Call", desc: "Meet live via our secure studio at meet.launchdock.me.", icon: Video },
+  { id: "video", title: "Video Call", desc: "Schedule a video call with our expert team.", icon: Video },
   { id: "chat", title: "Live Chat", desc: "Open the expert chat and stay async if we’re offline.", icon: MessagesSquare },
   { id: "schedule", title: "Schedule for Later", desc: "Book a slot for phone, video, or chat follow-up.", icon: CalendarClock },
 ];
@@ -68,6 +68,8 @@ const ModeSelector = ({ active, onSelect }: Props) => (
 
 export type { Mode };
 export default ModeSelector;
+
+
 
 
 

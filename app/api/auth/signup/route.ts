@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
 import { signupSchema } from "@/lib/validation";
-import { sendOTPEmail } from "@/lib/email";
+import { sendOTPEmail, sendNotificationEmailToAdmins } from "@/lib/email";
+import { createAdminNotifications } from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,6 +52,28 @@ export async function POST(request: NextRequest) {
 
     // Send OTP email
     await sendOTPEmail(validated.email, otp);
+
+    // Create notifications for all admins
+    await createAdminNotifications(
+      "New User Signup",
+      `${validated.name} (${validated.email}) has signed up.`,
+      { userId: user.id, email: validated.email, name: validated.name }
+    );
+
+    // Send email notification to admins
+    await sendNotificationEmailToAdmins(
+      "New User Signup - LaunchDock",
+      `A new user has signed up:\n\nName: ${validated.name}\nEmail: ${validated.email}\nPhone: ${validated.phone || "Not provided"}\n\nUser ID: ${user.id}`,
+      `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">New User Signup</h2>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <p><strong>Name:</strong> ${validated.name}</p>
+          <p><strong>Email:</strong> ${validated.email}</p>
+          ${validated.phone ? `<p><strong>Phone:</strong> ${validated.phone}</p>` : ""}
+          <p><strong>User ID:</strong> ${user.id}</p>
+        </div>
+      </div>`
+    );
 
     return NextResponse.json(
       {

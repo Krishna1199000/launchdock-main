@@ -26,6 +26,7 @@ const processSteps = [
       type: "Discovery & Strategy",
       metric: "+38% conversion from first call to proposal",
       accent: "from-emerald-400/80 via-emerald-500/80 to-sky-500/80",
+      image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=600&fit=crop&q=80",
     },
   },
   {
@@ -39,6 +40,7 @@ const processSteps = [
       type: "Product Roadmapping",
       metric: "-42% time-to-launch across multiple releases",
       accent: "from-sky-500/80 via-cyan-500/80 to-indigo-500/80",
+      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop&q=80",
     },
   },
   {
@@ -52,6 +54,7 @@ const processSteps = [
       type: "Product & Brand Design",
       metric: "+71% increase in session duration post re-design",
       accent: "from-pink-500/80 via-fuchsia-500/80 to-violet-500/80",
+      image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop&q=80",
     },
   },
   {
@@ -65,6 +68,7 @@ const processSteps = [
       type: "Full-stack Platform",
       metric: "Core vitals in the top 5% across the industry",
       accent: "from-indigo-500/80 via-blue-500/80 to-cyan-500/80",
+      image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop&q=80",
     },
   },
   {
@@ -78,6 +82,7 @@ const processSteps = [
       type: "QA & Reliability",
       metric: "99.98% uptime under real-world load",
       accent: "from-emerald-500/80 via-lime-500/80 to-amber-400/80",
+      image: "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=800&h=600&fit=crop&q=80",
     },
   },
   {
@@ -91,6 +96,7 @@ const processSteps = [
       type: "Launch & Scale",
       metric: "First 10k users onboarded in under 30 days",
       accent: "from-orange-500/80 via-rose-500/80 to-red-500/80",
+      image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&fit=crop&q=80",
     },
   },
   {
@@ -104,6 +110,7 @@ const processSteps = [
       type: "Continuous Delivery",
       metric: "Weekly releases without breaking core flows",
       accent: "from-sky-500/80 via-emerald-500/80 to-teal-500/80",
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&q=80",
     },
   },
 ];
@@ -360,21 +367,22 @@ const OurProcess = ({ onAction }: Props) => {
                       <span>Preview · {activeStep.title}</span>
                     </div>
 
-                    <div className="relative h-32 sm:h-36 overflow-hidden rounded-xl bg-gradient-to-br from-slate-800 via-slate-900 to-black">
-                      <motion.div
-                        className="absolute inset-x-[-40%] top-[-40%] h-full rounded-[40px] bg-gradient-to-r from-sky-400 via-primary to-violet-500 opacity-60 blur-xl"
-                        animate={{
-                          x: ["-10%", "15%", "-20%"],
-                          rotate: [0, 4, -3],
-                        }}
-                        transition={{
-                          duration: 9,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
+                    <div className="relative h-32 sm:h-36 overflow-hidden rounded-xl bg-transparent">
+                      {/* Background image */}
+                      <motion.img
+                        key={activeStep.title}
+                        src={activeStep.project.image}
+                        alt={activeStep.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.5 }}
                       />
+                      
+                      {/* Content overlay */}
                       <motion.div
-                        className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-xl border border-white/10 bg-black/60 px-3 py-2 text-[11px] text-slate-100"
+                        className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-xl border border-white/10 bg-black/70 backdrop-blur-sm px-3 py-2 text-[11px] text-slate-100"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.1 }}

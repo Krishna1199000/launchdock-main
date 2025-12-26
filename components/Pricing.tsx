@@ -214,16 +214,6 @@ const Pricing = ({ onPlanAction }: Props) => {
                     {plan.description}
                   </p>
 
-                  {/* Price */}
-                  <div className="mb-8">
-                    <div className="text-4xl font-bold text-foreground mb-1">
-                      {plan.price}
-                    </div>
-                    {plan.price !== "Custom" && (
-                      <p className="text-sm text-muted-foreground">One-time project</p>
-                    )}
-                  </div>
-
                   {/* Features */}
                   <ul className="space-y-4 mb-8">
                     {plan.features.map((feature, i) => (

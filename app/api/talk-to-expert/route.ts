@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser, requireAuth } from "@/lib/auth";
-import { randomUUID } from "crypto";
-
-const MEET_BASE_URL = process.env.MEET_BASE_URL || "https://meet.launchdock.me/room";
+import { sendNotificationEmailToAdmins } from "@/lib/email";
+import { createAdminNotifications } from "@/lib/notifications";
 
 const parseBody = async (request: NextRequest) => {
   const body = await request.json();
@@ -54,10 +53,8 @@ const deriveStatus = (mode: string, immediate: boolean, offline?: boolean, busy?
 };
 
 const buildMeeting = (mode: string, immediate: boolean, scheduledFor?: Date) => {
-  if (mode !== "video") return {};
-  const roomId = randomUUID();
-  const meetingLink = `${MEET_BASE_URL}/${roomId}`;
-  return { roomId, meetingLink, scheduledFor: immediate ? undefined : scheduledFor };
+  // Video meetings are in development, so we don't create meeting links
+  return { scheduledFor: immediate ? undefined : scheduledFor };
 };
 
 // POST /api/talk-to-expert - public entry
@@ -85,11 +82,65 @@ export async function POST(request: NextRequest) {
         immediate: parsed.immediate,
         scheduledFor: parsed.scheduledFor || null,
         status,
-        roomId: meeting.roomId,
-        meetingLink: meeting.meetingLink,
         userId: user?.id || null,
       },
     });
+
+    // Create notifications for all admins
+    const modeLabel = parsed.mode.charAt(0).toUpperCase() + parsed.mode.slice(1);
+    const timeLabel = parsed.immediate ? "immediate" : `scheduled for ${parsed.scheduledFor?.toLocaleString()}`;
+    
+    await createAdminNotifications(
+      "New Talk to Expert Request",
+      `${parsed.name} requested ${modeLabel} consultation (${timeLabel}): ${parsed.requirement}`,
+      { 
+        talkRequestId: talkRequest.id,
+        name: parsed.name,
+        email: parsed.email,
+        phone: parsed.phone,
+        mode: parsed.mode,
+        requirement: parsed.requirement,
+        immediate: parsed.immediate,
+        scheduledFor: parsed.scheduledFor,
+      }
+    );
+
+    // Send email notification to admins
+    const emailText = `New Talk to Expert Request
+
+Mode: ${modeLabel}
+Name: ${parsed.name}
+Email: ${parsed.email || "Not provided"}
+Phone: ${parsed.phone || "Not provided"}
+Requirement: ${parsed.requirement}
+Type: ${parsed.immediate ? "Immediate" : `Scheduled for ${parsed.scheduledFor?.toLocaleString()}`}
+
+Request ID: ${talkRequest.id}`;
+
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <img src="cid:logo@launchdock" alt="LaunchDock Logo" style="max-width: 150px; height: auto; margin: 0 auto 20px; display: block;" />
+        <h2 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">New Talk to Expert Request</h2>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <p><strong>Mode:</strong> ${modeLabel}</p>
+          <p><strong>Name:</strong> ${parsed.name}</p>
+          <p><strong>Email:</strong> ${parsed.email || "Not provided"}</p>
+          <p><strong>Phone:</strong> ${parsed.phone || "Not provided"}</p>
+          <p><strong>Type:</strong> ${parsed.immediate ? "Immediate" : `Scheduled for ${parsed.scheduledFor?.toLocaleString()}`}</p>
+          <p><strong>Request ID:</strong> ${talkRequest.id}</p>
+        </div>
+        <div style="background-color: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1f2937; margin-top: 0;">Requirement:</h3>
+          <p style="color: #4b5563; line-height: 1.6; white-space: pre-wrap;">${parsed.requirement}</p>
+        </div>
+      </div>
+    `;
+
+    await sendNotificationEmailToAdmins(
+      `New Talk to Expert Request - ${modeLabel}`,
+      emailText,
+      emailHtml
+    );
 
     return NextResponse.json({ request: talkRequest }, { status: 201 });
   } catch (error) {
@@ -123,6 +174,8 @@ export const GET = requireAuth(async (request: NextRequest, user) => {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });
+
+
 
 
 

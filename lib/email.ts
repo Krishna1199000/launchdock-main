@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 // Namecheap email configuration
 // For Private Email: mail.privateemail.com
@@ -35,6 +37,7 @@ export const getTransporter = () => {
 export async function sendOTPEmail(email: string, otp: string) {
   // Create transporter fresh each time to ensure env vars are read
   const currentTransporter = getTransporter();
+  const logoAttachment = getLogoAttachment();
   
   const mailOptions = {
     from: `"LaunchDock" <support@launchdock.me>`,
@@ -71,6 +74,7 @@ support@launchdock.me`,
                   <!-- Header -->
                   <tr>
                     <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                      <img src="cid:logo@launchdock" alt="LaunchDock Logo" style="max-width: 150px; height: auto; margin: 0 auto 10px; display: block;" />
                       <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">LaunchDock</h1>
                     </td>
                   </tr>
@@ -127,6 +131,7 @@ support@launchdock.me`,
     // Additional options for better deliverability
     priority: "high" as const,
     date: new Date(),
+    attachments: logoAttachment ? [logoAttachment] : [],
   };
 
   try {
@@ -144,10 +149,32 @@ type SendEmailInput = {
   text: string;
   html?: string;
   replyTo?: string;
+  attachments?: Array<{ filename: string; path: string } | { filename: string; content: Buffer; cid?: string }>;
 };
+
+export function getLogoAttachment() {
+  try {
+    const logoPath = join(process.cwd(), "public", "launchdocklogo1.png");
+    const logoContent = readFileSync(logoPath);
+    return {
+      filename: "launchdocklogo1.png",
+      content: logoContent,
+      cid: "logo@launchdock",
+    };
+  } catch (error) {
+    console.error("Error loading logo:", error);
+    return null;
+  }
+}
 
 export async function sendSupportEmail(input: SendEmailInput) {
   const currentTransporter = getTransporter();
+  const logoAttachment = getLogoAttachment();
+  
+  const attachments = logoAttachment 
+    ? [...(input.attachments || []), logoAttachment]
+    : (input.attachments || []);
+
   const mailOptions = {
     from: `"LaunchDock" <support@launchdock.me>`,
     to: input.to,
@@ -155,6 +182,7 @@ export async function sendSupportEmail(input: SendEmailInput) {
     subject: input.subject,
     text: input.text,
     html: input.html,
+    attachments,
   };
 
   try {
@@ -162,6 +190,47 @@ export async function sendSupportEmail(input: SendEmailInput) {
     return { success: true };
   } catch (error) {
     console.error("Error sending support email:", error);
+    return { success: false, error };
+  }
+}
+
+export async function sendNotificationEmailToAdmins(
+  subject: string,
+  text: string,
+  html?: string
+) {
+  const { prisma } = await import("./prisma");
+  
+  try {
+    // Get all admin users
+    const admins = await prisma.user.findMany({
+      where: { role: "ADMIN" },
+      select: { id: true, email: true },
+    });
+
+    if (admins.length === 0) {
+      console.warn("No admin users found to send notification email");
+      return { success: false, error: "No admins found" };
+    }
+
+    const adminEmails = admins.map(admin => admin.email);
+    const logoAttachment = getLogoAttachment();
+    
+    const mailOptions = {
+      from: `"LaunchDock" <support@launchdock.me>`,
+      to: adminEmails,
+      subject,
+      text,
+      html,
+      attachments: logoAttachment ? [logoAttachment] : [],
+    };
+
+    const currentTransporter = getTransporter();
+    await currentTransporter.sendMail(mailOptions);
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending notification email to admins:", error);
     return { success: false, error };
   }
 }

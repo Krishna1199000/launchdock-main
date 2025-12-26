@@ -97,7 +97,7 @@ const Contact = ({ onSchedule }: Props) => {
                       transition-all duration-300
                       text-base
                     "
-                    placeholder="John Doe"
+                    placeholder="your name"
                   />
                 </div>
 
@@ -130,7 +130,7 @@ const Contact = ({ onSchedule }: Props) => {
                         transition-all duration-300
                         text-base
                       "
-                      placeholder="john@example.com"
+                      placeholder="your@email.com"
                     />
                   </div>
                   <div>
@@ -238,10 +238,11 @@ const Contact = ({ onSchedule }: Props) => {
                         "
                       >
                         <option value="">Select budget</option>
-                        <option value="5k-10k">$5,000 - $10,000</option>
-                        <option value="10k-25k">$10,000 - $25,000</option>
-                        <option value="25k-50k">$25,000 - $50,000</option>
-                        <option value="50k+">$50,000+</option>
+                        <option value="10k-50k">₹10,000 - ₹50,000</option>
+                        <option value="5k-10k">₹50,000 - ₹1,00,000</option>
+                        <option value="10k-25k">₹1,00,000 - ₹2,50,000</option>
+                        <option value="25k-50k">₹2,50,000 - ₹5,00,000</option>
+                        <option value="50k+">₹5,00,000+</option>
                       </select>
                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                     </div>
@@ -320,7 +321,7 @@ const Contact = ({ onSchedule }: Props) => {
 
                 {/* Phone */}
                 <a 
-                  href="tel:+1234567890" 
+                  href="tel:8779142877" 
                   className="flex items-center gap-4 group"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-foreground/5 flex items-center justify-center group-hover:bg-foreground/10 transition-all duration-300">
@@ -329,7 +330,7 @@ const Contact = ({ onSchedule }: Props) => {
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Phone</p>
                     <p className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
-                      +1 (555) 123-4567
+                      +91 8779142877
                     </p>
                   </div>
                 </a>
@@ -351,7 +352,7 @@ const Contact = ({ onSchedule }: Props) => {
               {/* WhatsApp CTA */}
               <div>
                 <a
-                  href="https://wa.me/1234567890"
+                  href="https://wa.me/918779142877"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="

@@ -1,5 +1,6 @@
 "use client"
 import { Globe, Smartphone, Palette, Zap, Code, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 const services = [
   {
@@ -7,36 +8,42 @@ const services = [
     title: "Web Development",
     description: "Custom websites and web applications built with cutting-edge technologies for optimal performance.",
     features: ["React & Next.js", "Custom CMS", "E-commerce"],
+    href: "/services/web-development",
   },
   {
     icon: Smartphone,
     title: "Mobile Apps",
     description: "Native and cross-platform mobile applications that deliver exceptional user experiences.",
     features: ["iOS & Android", "React Native", "Flutter"],
+    href: "/services/mobile-apps",
   },
   {
     icon: Palette,
     title: "UI/UX Design",
     description: "Beautiful, intuitive designs that engage users and drive conversions.",
     features: ["User Research", "Prototyping", "Design Systems"],
+    href: "/services/ui-ux-design",
   },
   {
     icon: Zap,
     title: "MVP Development",
     description: "Launch your startup fast with lean, scalable minimum viable products.",
     features: ["Rapid Prototyping", "Agile Sprints", "Quick Launch"],
+    href: "/services/mvp-development",
   },
   {
     icon: Code,
     title: "Custom Software",
     description: "Tailored software solutions that solve your unique business challenges.",
     features: ["API Development", "Integrations", "Automation"],
+    href: "/services/custom-software",
   },
   {
     icon: TrendingUp,
     title: "Digital Strategy",
     description: "Strategic consulting to help you grow and scale your digital presence.",
     features: ["SEO & Analytics", "Growth Hacking", "Optimization"],
+    href: "/services/digital-strategy",
   },
 ];
 
@@ -65,9 +72,10 @@ const Services = () => {
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
-            <div
+            <Link
               key={index}
-              className="group glass-card rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2"
+              href={service.href}
+              className="group glass-card rounded-2xl p-8 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 block"
             >
               {/* Icon */}
               <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
@@ -93,7 +101,7 @@ const Services = () => {
                   </span>
                 ))}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

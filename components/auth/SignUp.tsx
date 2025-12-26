@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { 
   Eye, 
   EyeOff, 
@@ -235,12 +236,15 @@ const SignUp = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="max-w-md text-center animate-fade-in">
-            <div className="w-32 h-32 mx-auto mb-8 rounded-3xl bg-primary/10 flex items-center justify-center">
-              <Building2 className="w-16 h-16 text-primary" />
+            <div className="w-40 h-40 mx-auto mb-8 flex items-center justify-center">
+              <Image 
+                src="/launchdocklogo1.png" 
+                alt="LaunchDock Logo" 
+                width={200} 
+                height={80}
+                className="object-contain"
+              />
             </div>
-            <h2 className="font-display text-4xl font-bold text-foreground mb-4">
-              Welcome to <span className="text-gradient">LaunchDock</span>
-            </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Join hundreds of businesses who trust us to bring their digital visions to life.
             </p>
@@ -287,7 +291,7 @@ const SignUp = () => {
                     focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10
                     transition-all duration-300
                   "
-                  placeholder="John Doe"
+                  placeholder="your name"
                 />
                 {validatedFields.has('fullName') && (
                   <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500 animate-scale-in" />
@@ -316,7 +320,7 @@ const SignUp = () => {
                       focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10
                       transition-all duration-300
                     "
-                    placeholder="john@example.com"
+                    placeholder="your@email.com"
                   />
                   {validatedFields.has('email') && (
                     <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500 animate-scale-in" />
@@ -461,10 +465,11 @@ const SignUp = () => {
                     "
                   >
                     <option value="">Select budget</option>
-                    <option value="5k-10k">$5,000 - $10,000</option>
-                    <option value="10k-25k">$10,000 - $25,000</option>
-                    <option value="25k-50k">$25,000 - $50,000</option>
-                    <option value="50k+">$50,000+</option>
+                    <option value="10k-50k">₹10,000 - ₹50,000</option>
+                    <option value="5k-10k">₹50,000 - ₹1,00,000</option>
+                    <option value="10k-25k">₹1,00,000 - ₹2,50,000</option>
+                    <option value="25k-50k">₹2,50,000 - ₹5,00,000</option>
+                    <option value="50k+">₹5,00,000+</option>
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                 </div>

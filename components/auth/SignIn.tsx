@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { 
   Eye, 
   EyeOff, 
@@ -93,10 +94,14 @@ const SignIn = () => {
         ">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                <span className="text-2xl">🚀</span>
-              </div>
+            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+              <Image 
+                src="/launchdocklogo1.png" 
+                alt="LaunchDock Logo" 
+                width={80} 
+                height={80}
+                className="object-contain"
+              />
             </div>
             <h1 className="font-display text-3xl font-bold text-foreground mb-2">
               Welcome Back
@@ -128,7 +133,7 @@ const SignIn = () => {
                     focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10
                     transition-all duration-300
                   "
-                  placeholder="Enter your email"
+                  placeholder="your@email.com"
                 />
               </div>
             </div>

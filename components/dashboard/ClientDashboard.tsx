@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { 
   LayoutDashboard,
   FolderOpen,
@@ -314,15 +315,15 @@ const ClientDashboard = () => {
       `}>
         {/* Logo */}
         <div className="p-6 border-b border-border/30">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-              <span className="text-lg">🚀</span>
-            </div>
-            {sidebarOpen && (
-              <span className="font-display text-lg font-bold text-foreground">
-                LaunchDock
-              </span>
-            )}
+          <div className="flex items-center justify-center">
+            <Image 
+              src="/launchdocklogo1.png" 
+              alt="LaunchDock Logo" 
+              width={sidebarOpen ? 120 : 32} 
+              height={sidebarOpen ? 32 : 32}
+              className="object-contain"
+              style={{ width: sidebarOpen ? 'auto' : '32px', height: '32px' }}
+            />
           </div>
         </div>
 

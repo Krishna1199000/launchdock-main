@@ -191,10 +191,6 @@ const TalkToExpertModal = ({ open, onClose, expertOnline = true, expertBusy = fa
                         <span>Chat fallback</span>
                         <span className="rounded-full bg-teal-500/15 px-3 py-1 text-xs text-teal-100">Offline → async chat</span>
                       </div>
-                      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-                        <span>Video room</span>
-                        <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs text-indigo-100">meet.launchdock.me</span>
-                      </div>
                     </div>
                   </div>
                 </div>

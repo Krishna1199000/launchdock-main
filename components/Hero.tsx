@@ -46,7 +46,7 @@ const Hero = () => {
           <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full mb-8 animate-slide-up">
             <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
             <span className="text-sm text-muted-foreground">
-              Trusted by 200+ startups worldwide
+              Trusted by top startups
             </span>
           </div>
 
@@ -78,22 +78,6 @@ const Hero = () => {
               <Play className="w-5 h-5" />
               Watch Our Work
             </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-12 pt-6 border-t border-border/50">
-            {[
-              { value: "200+", label: "Projects Delivered" },
-              { value: "50+", label: "Happy Clients" },
-              { value: "99%", label: "Client Satisfaction" },
-            ].map((stat, index) => (
-              <div key={index} className="text-center animate-fade-in" style={{ animationDelay: `${index * 0.2}s` }}>
-                <div className="font-display text-3xl md:text-4xl font-bold text-gradient mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
