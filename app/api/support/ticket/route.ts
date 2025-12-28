@@ -31,25 +31,25 @@ Please respond to: ${email}`;
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <img src="cid:logo@launchdock" alt="LaunchDock Logo" style="max-width: 150px; height: auto; margin: 0 auto 20px; display: block;" />
+        <img src="cid:logo@launchdock" alt="Logo" style="max-width: 150px; height: auto; margin: 0 auto 20px; display: block;" />
         <h2 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
           New Support Ticket
         </h2>
         
-        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <div style="padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; margin: 20px 0;">
           <p><strong>Priority:</strong> <span style="text-transform: uppercase; color: #3b82f6;">${priority}</span></p>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Subject:</strong> ${subject}</p>
         </div>
         
-        <div style="background-color: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; margin: 20px 0;">
+        <div style="padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; margin: 20px 0;">
           <h3 style="color: #1f2937; margin-top: 0;">Message:</h3>
           <p style="color: #4b5563; line-height: 1.6; white-space: pre-wrap;">${message}</p>
         </div>
         
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
-          <p>This ticket was submitted through the LaunchDock support portal.</p>
+          <p>This ticket was submitted through the support portal.</p>
           <p>Please respond to: <a href="mailto:${email}" style="color: #3b82f6;">${email}</a></p>
         </div>
       </div>

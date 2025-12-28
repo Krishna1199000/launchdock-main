@@ -66,28 +66,27 @@ support@launchdock.me`,
           <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
           <title>Verify Your Email - LaunchDock</title>
         </head>
-        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f4f4f4; line-height: 1.6; color: #333333;">
-          <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f4f4f4; padding: 20px;">
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333333;">
+          <table role="presentation" style="width: 100%; border-collapse: collapse; padding: 20px;">
             <tr>
               <td align="center" style="padding: 20px 0;">
-                <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto;">
                   <!-- Header -->
                   <tr>
-                    <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center; border-radius: 8px 8px 0 0;">
-                      <img src="cid:logo@launchdock" alt="LaunchDock Logo" style="max-width: 150px; height: auto; margin: 0 auto 10px; display: block;" />
-                      <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">LaunchDock</h1>
+                    <td style="padding: 40px 30px; text-align: center;">
+                      <img src="cid:logo@launchdock" alt="Logo" style="max-width: 150px; height: auto; margin: 0 auto; display: block;" />
                     </td>
                   </tr>
                   <!-- Content -->
                   <tr>
                     <td style="padding: 40px 30px;">
                       <h2 style="color: #333333; margin-top: 0; margin-bottom: 20px; font-size: 24px; font-weight: 600;">Verify Your Email Address</h2>
-                      <p style="color: #666666; margin: 0 0 20px 0; font-size: 16px;">Thank you for signing up with LaunchDock! Please use the following verification code to complete your registration:</p>
+                      <p style="color: #666666; margin: 0 0 20px 0; font-size: 16px;">Thank you for signing up! Please use the following verification code to complete your registration:</p>
                       
                       <!-- OTP Box -->
                       <table role="presentation" style="width: 100%; margin: 30px 0;">
                         <tr>
-                          <td align="center" style="background-color: #f8f9fa; border: 2px dashed #667eea; border-radius: 8px; padding: 30px 20px;">
+                          <td align="center" style="border: 2px dashed #667eea; border-radius: 8px; padding: 30px 20px;">
                             <div style="font-size: 36px; font-weight: 700; letter-spacing: 12px; color: #667eea; font-family: 'Courier New', Courier, monospace; line-height: 1.2;">
                               ${otp}
                             </div>
@@ -96,15 +95,15 @@ support@launchdock.me`,
                       </table>
                       
                       <p style="color: #999999; margin: 20px 0 0 0; font-size: 14px; line-height: 1.5;">This verification code will expire in 10 minutes for security purposes.</p>
-                      <p style="color: #999999; margin: 10px 0 0 0; font-size: 14px; line-height: 1.5;">If you didn't create an account with LaunchDock, please ignore this email.</p>
+                      <p style="color: #999999; margin: 10px 0 0 0; font-size: 14px; line-height: 1.5;">If you didn't create an account, please ignore this email.</p>
                     </td>
                   </tr>
                   <!-- Footer -->
                   <tr>
-                    <td style="padding: 30px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; border-radius: 0 0 8px 8px;">
+                    <td style="padding: 30px; border-top: 1px solid #e9ecef;">
                       <p style="color: #666666; margin: 0 0 10px 0; font-size: 14px; line-height: 1.5;">
                         Best regards,<br>
-                        <strong>The LaunchDock Team</strong>
+                        <strong>The Team</strong>
                       </p>
                       <p style="color: #999999; margin: 15px 0 0 0; font-size: 12px; line-height: 1.5;">
                         <a href="mailto:support@launchdock.me" style="color: #667eea; text-decoration: none;">support@launchdock.me</a><br>
