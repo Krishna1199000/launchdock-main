@@ -10,14 +10,17 @@ import {
   Calendar,
   Send,
   ChevronDown,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   onSchedule?: () => void;
 };
 
 const Contact = ({ onSchedule }: Props) => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,11 +29,49 @@ const Contact = ({ onSchedule }: Props) => {
     budget: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/chatwidget", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "email",
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: `${formData.projectType ? `Project Type: ${formData.projectType}\n` : ''}${formData.budget ? `Budget: ${formData.budget}\n\n` : ''}${formData.message}`,
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message sent!",
+          description: "We've received your message and will respond within 24 hours.",
+          variant: "success",
+        });
+        setFormData({ name: "", email: "", phone: "", projectType: "", budget: "", message: "" });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message. Please try again.",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -287,10 +328,20 @@ const Contact = ({ onSchedule }: Props) => {
                   type="submit"
                   variant="hero" 
                   size="xl"
-                  className="w-full group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+                  disabled={isSubmitting}
+                  className="w-full group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Get a Free Quote
-                  <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  {isSubmitting ? (
+                    <>
+                      Sending...
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    </>
+                  ) : (
+                    <>
+                      Get a Free Quote
+                      <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
@@ -305,7 +356,7 @@ const Contact = ({ onSchedule }: Props) => {
 
                 {/* Email */}
                 <a 
-                  href="mailto:hello@launchdock.com" 
+                  href="mailto:support@launchdock.me" 
                   className="flex items-center gap-4 group"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-foreground/5 flex items-center justify-center group-hover:bg-foreground/10 transition-all duration-300">
@@ -314,7 +365,7 @@ const Contact = ({ onSchedule }: Props) => {
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Email</p>
                     <p className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
-                      hello@launchdock.com
+                      support@launchdock.me
                     </p>
                   </div>
                 </a>

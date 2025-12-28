@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 const contactMethods = [
   {
@@ -86,6 +87,7 @@ const socialLinks = [
 ];
 
 export default function ContactPage() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -115,16 +117,29 @@ export default function ContactPage() {
 
       if (response.ok) {
         setSubmitted(true);
+        toast({
+          title: "Message sent!",
+          description: "We've received your message and will respond within 24 hours.",
+          variant: "success",
+        });
         setTimeout(() => {
           setSubmitted(false);
           setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
         }, 5000);
       } else {
-        alert("Failed to send message. Please try again.");
+        toast({
+          title: "Error",
+          description: "Failed to send message. Please try again.",
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Failed to send message. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }

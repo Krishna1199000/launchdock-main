@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 const jobCategories = ["All", "Engineering", "Design", "Marketing", "Sales", "Operations"];
 
@@ -168,6 +169,7 @@ const jobs = [
 ];
 
 export default function CareersPage() {
+  const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedJob, setSelectedJob] = useState<typeof jobs[0] | null>(null);
@@ -206,17 +208,30 @@ export default function CareersPage() {
 
       if (response.ok) {
         setSubmitted(true);
+        toast({
+          title: "Application submitted!",
+          description: "Thank you for applying. We'll review your application and get back to you soon.",
+          variant: "success",
+        });
         setTimeout(() => {
           setSubmitted(false);
           setSelectedJob(null);
           setApplicationForm({ name: "", email: "", phone: "", resume: "", coverLetter: "" });
         }, 5000);
       } else {
-        alert("Failed to submit application. Please try again.");
+        toast({
+          title: "Error",
+          description: "Failed to submit application. Please try again.",
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error("Error submitting application:", error);
-      alert("Failed to submit application. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to submit application. Please try again.",
+        variant: "error",
+      });
     }
   };
 

@@ -92,7 +92,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 LaunchDock. All rights reserved.
+            © 2025 LaunchDock. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:text-primary transition-colors">

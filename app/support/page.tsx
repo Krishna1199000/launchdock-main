@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 const supportOptions = [
   {
@@ -79,6 +80,7 @@ const helpResources = [
 ];
 
 export default function SupportPage() {
+  const { toast } = useToast();
   const [ticketForm, setTicketForm] = useState({
     name: "",
     email: "",
@@ -99,16 +101,29 @@ export default function SupportPage() {
 
       if (response.ok) {
         setSubmitted(true);
+        toast({
+          title: "Ticket submitted!",
+          description: "Your support ticket has been created. We'll respond soon.",
+          variant: "success",
+        });
         setTimeout(() => {
           setSubmitted(false);
           setTicketForm({ name: "", email: "", subject: "", priority: "medium", message: "" });
         }, 5000);
       } else {
-        alert("Failed to submit ticket. Please try again.");
+        toast({
+          title: "Error",
+          description: "Failed to submit ticket. Please try again.",
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error("Error submitting ticket:", error);
-      alert("Failed to submit ticket. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to submit ticket. Please try again.",
+        variant: "error",
+      });
     }
   };
 
