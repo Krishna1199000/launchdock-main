@@ -4,6 +4,7 @@ import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 5000;
+const TOAST_DURATION = 4000; // Auto-dismiss after 4 seconds
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -52,6 +53,7 @@ interface State {
 }
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+const toastDismissTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
@@ -67,6 +69,23 @@ const addToRemoveQueue = (toastId: string) => {
   }, TOAST_REMOVE_DELAY);
 
   toastTimeouts.set(toastId, timeout);
+};
+
+const scheduleAutoDismiss = (toastId: string, duration: number = TOAST_DURATION) => {
+  // Clear any existing dismiss timeout
+  if (toastDismissTimeouts.has(toastId)) {
+    clearTimeout(toastDismissTimeouts.get(toastId)!);
+  }
+
+  const timeout = setTimeout(() => {
+    toastDismissTimeouts.delete(toastId);
+    dispatch({
+      type: "DISMISS_TOAST",
+      toastId: toastId,
+    });
+  }, duration);
+
+  toastDismissTimeouts.set(toastId, timeout);
 };
 
 export const reducer = (state: State, action: Action): State => {
@@ -85,6 +104,20 @@ export const reducer = (state: State, action: Action): State => {
 
     case "DISMISS_TOAST": {
       const { toastId } = action;
+
+      // Clear auto-dismiss timeout if it exists
+      if (toastId && toastDismissTimeouts.has(toastId)) {
+        clearTimeout(toastDismissTimeouts.get(toastId)!);
+        toastDismissTimeouts.delete(toastId);
+      } else if (!toastId) {
+        // Clear all timeouts if no specific toastId
+        state.toasts.forEach((toast) => {
+          if (toastDismissTimeouts.has(toast.id)) {
+            clearTimeout(toastDismissTimeouts.get(toast.id)!);
+            toastDismissTimeouts.delete(toast.id);
+          }
+        });
+      }
 
       // ! Side effects ! - This could be extracted into a dismissToast() action,
       // but I'll keep it here for simplicity
@@ -135,7 +168,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">;
 
-function toast({ ...props }: Toast) {
+function toast({ duration, ...props }: Toast) {
   const id = genId();
 
   const update = (props: ToasterToast) =>
@@ -143,7 +176,14 @@ function toast({ ...props }: Toast) {
       type: "UPDATE_TOAST",
       toast: { ...props, id },
     });
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
+  const dismiss = () => {
+    // Clear auto-dismiss timeout if it exists
+    if (toastDismissTimeouts.has(id)) {
+      clearTimeout(toastDismissTimeouts.get(id)!);
+      toastDismissTimeouts.delete(id);
+    }
+    dispatch({ type: "DISMISS_TOAST", toastId: id });
+  };
 
   dispatch({
     type: "ADD_TOAST",
@@ -156,6 +196,9 @@ function toast({ ...props }: Toast) {
       },
     },
   });
+
+  // Schedule auto-dismiss
+  scheduleAutoDismiss(id, duration || TOAST_DURATION);
 
   return {
     id: id,
